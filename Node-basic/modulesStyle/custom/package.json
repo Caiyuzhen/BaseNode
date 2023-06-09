@@ -1,0 +1,17 @@
+{
+  "name": "custom",
+  "version": "1.0.0",
+  "description": "Zen's module",
+  "keywords": ["描述这个包如何用"],
+  "main": "index.js",
+  "scripts": {
+	"test": "node ./test.js && node ./test2.js",
+	"start": "node ./test.js",
+	"build": "echo $npm_package_config_lala"
+  },
+  "author": "Zen",
+  "license": "MIT",
+  "config": {
+	"lala": "hello-world"
+  }
+}
