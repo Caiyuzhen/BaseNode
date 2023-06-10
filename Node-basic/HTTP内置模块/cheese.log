@@ -1,0 +1,29 @@
+[2023-06-10T13:09:18.003] [DEBUG] cheese - Url {
+  protocol: 'https:',
+  slashes: true,
+  auth: null,
+  host: 'www.google.com:443',
+  port: '443',
+  hostname: 'www.google.com',
+  hash: '#tag=3',
+  search: '?id=2',
+  query: 'id=2',
+  pathname: '/path/index.html',
+  path: '/path/index.html?id=2',
+  href: 'https://www.google.com:443/path/index.html?id=2#tag=3'
+}
+[2023-06-10T13:33:49.553] [DEBUG] cheese - Url {
+  protocol: 'https:',
+  slashes: true,
+  auth: null,
+  host: 'www.google.com:443',
+  port: '443',
+  hostname: 'www.google.com',
+  hash: '#tag=3',
+  search: '?id=2',
+  query: 'id=2',
+  pathname: '/path/index.html',
+  path: '/path/index.html?id=2',
+  href: 'https://www.google.com:443/path/index.html?id=2#tag=3'
+}
+[2023-06-10T13:33:49.554] [DEBUG] cheese - http://www.google.com:443/path/index.html?id=2#tag=3
