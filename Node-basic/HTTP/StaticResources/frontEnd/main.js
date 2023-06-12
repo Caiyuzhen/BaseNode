@@ -3,13 +3,27 @@ const btn1 = document.querySelector('#btn-1')
 
 
 btn1.addEventListener('click', () => {
+	// GET 请求的参数主要放在 URL 内, POST 主要放在请求体内 （GET 主要用于获取数据[大小限制 2k], POST 主要用于提交数据）
 
+
+	// post 请求
+	// fetch('http://localhost:7070/temp.html', {
+	// 	method: 'POST',
+	// 	headers: {
+	// 		'Content-Type': 'application/json'
+	// 	}
+	// })
+
+	
 	// 获取 temp.css
 	fetch('http://localhost:7070/temp.css')
 		.then(response => response.text()) // 使用.text()方法将响应转换为文本格式
 		.then(data => {
 
 			// 在这里处理获取到的CSS内容
+			// const link = document.querySelector('#link-temp')
+			//给 link 添加 css 样式表
+			// link.setAttribute('href', data)
 			console.log(data)
 		})
 		.catch(error => {
