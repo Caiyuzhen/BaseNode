@@ -35,6 +35,8 @@ const server = http.createServer((req, res) => {
 	else if (req.method === 'GET' && pathname === '/api/register') { //注册页
 		// 设置跨域访问
 		setCorsHeaders(res) //🔥本质上是设置了三个 setHeader!!
+		res.setHeader('Content-Type', 'application/json; charset=utf-8')
+		
 		const data = {
 			message: '注册界面'
 		}
