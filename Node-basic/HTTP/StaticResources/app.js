@@ -3,34 +3,82 @@ const url = require('url')
 const fs = require('fs')
 
 
+// 获取文件扩展名 （后缀）
+function getFileExtension(filePath) {
+	const index = filePath.lastIndexOf('.');
+	return index !== -1 ? filePath.slice(index) : '';
+}
+
+
+
+
 // 设置跨域访问的函数抽象
-function setCorsHeaders(res) {
+function setCorsHeaders(res, filePath) {
+
 	res.setHeader('Access-Control-Allow-Origin', '*')
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+
+
+	// 根据文件扩展名设置正确的 Content-Type
+	switch (getFileExtension(filePath)) {
+		case '.html':
+			res.setHeader('Content-Type', 'text/html', 'charset=utf-8')
+			break
+		case '.js':
+			res.setHeader('Content-Type', 'application/javascript; charset=utf-8')
+			break
+		case '.css':
+			res.setHeader('Content-Type', 'text/css;', 'charset=utf-8')
+			break
+		case '.jpg':
+		case '.jpeg':
+			res.setHeader('Content-Type', 'image/jpeg') // 判断是否是图片
+			break
+		case '.png':
+			res.setHeader('Content-Type', 'image/png')	// 判断是否是图片
+			break
+		case '.gif':
+			res.setHeader('Content-Type', 'image/gif')
+			break
+		default:
+			res.setHeader('Content-Type', 'application/octet-stream')
+			break
+	}
 }
 
 
 
 const server = http.createServer((req, res) => {
 	let { pathname } = new URL(req.url, 'http://localhost:7070') //pathname 为请求路径
-	let filePath =  __dirname + '/Temp' + pathname  // 👈 拼接要读取的文件路径
 
-	// // 【🌟方法一】读取文件, 异步 API, http://localhost:7070/temp.js
-	// fs.readFileSync(filePath, (err, fileData) => {
-	// 	setCorsHeaders(res) //🔥本质上是设置了三个 setHeader!!
-	// 	res.setHeader('Content-Type', 'application/json; charset=utf-8')
+
+	// 静态资源根目录, 用一个变量去承接核心是为了能够动态的设置静态资源的目录（方便修改）
+	let root = __dirname + '/Temp'
+
+	// let filePath =  __dirname + '/Temp' + pathname  // 👈 拼接要读取的文件路径, __dirname + '/Temp' 相当于【静态资源的目录】
+	let filePath =  root + pathname  // 👈 拼接要读取的文件路径, __dirname + '/Temp' 相当于【静态资源的目录】
+
+	/* 【🌟方法一】读取文件, 异步 API
+			这种方法的访问路径就是文件本身
+				http://localhost:7070/temp.css
+				http://localhost:7070/temp.js
+				http://localhost:7070/temp.html
+				http://localhost:7070/staticImg.jpg
+	*/
+	fs.readFile(filePath, (err, fileData) => {
+		setCorsHeaders(res, filePath) //🔥本质上是设置了三个 setHeader!!
 		
-	// 	// 成功响应文件
-	// 	res.end(fileData)
+		// 成功响应文件
+		res.end(fileData)
 
-	// 	// 处理错误
-	// 	if(err) {
-	// 		res.statusCode = 500
-	// 		console.log('文件读取失败')
-	// 		return
-	// 	}
-	// })
+		// 处理错误
+		if(err) {
+			res.statusCode = 500
+			console.log('文件读取失败')
+			return
+		}
+	})
 
 
 
