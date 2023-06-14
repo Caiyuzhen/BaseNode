@@ -3,6 +3,9 @@ const url = require('url')
 const path = require('path')
 const fs = require('fs')
 const { singers }  = require('../JSON/singer.json')
+const bodyParser = require('body-parser')
+const searchRouter = require('./router/searchRouter.js')
+const detailRouter = require('./router/detailRouter.js')
 
 
 //【第一步】 创建应用对象 ——————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -10,8 +13,9 @@ const app = express()
 
 
 
-// 【第二步】 创建路由 (类似于原生 Node 创建一个 Get 活 Post 的 路由 api) ————————————————————————————————————————————————————————
+// 【第二步】 创建路由规则 (类似于原生 Node 创建一个 Get 活 Post 的 路由 api) ————————————————————————————————————————————————————————
 // 🌟 携带参数的访问方式: http://localhost:3030/?aa=100&bb=200
+// 【请求报文】由【请求行】、【请求头】和【请求体】组成
 app.get('/', (req, res) => { // / 为根路由
 	res.setHeader('Content-Type', 'text/html; charset=utf-8')
 
@@ -37,12 +41,20 @@ app.get('/', (req, res) => { // / 为根路由
 
 
 
+
+// ⚡️⚡️引入模块化路由
+app.use(searchRouter)
+app.use(detailRouter)
+
+
+
+// 定义带参数的路由
 app.get('/:id.html', (req, res) => { //👈 ：id 为动态参数, 通配符, 会统一存储在 params 对象上!!  场景 => 比如商品列表的不同 id
 	res.setHeader('Content-Type', 'text/html; charset=utf-8')
 
 	// 🌟 动态参数的获取方法: http://localhost:3030/3989462121.html
 	console.log(req.params.id) //👈 上面写了 id 这里也是通过 id 来获取, 从 params 内获取
-	res.end('😄收到你的 GET 请求了')
+	res.end('😄收到你的 GET 请求了~')
 })
 
 
@@ -76,10 +88,8 @@ app.get('/singer/:id.html', (req, res) => { //⚡️获取歌手信息的接口
 
 
 
-app.post('/login', (req, res) => {
-	res.setHeader('Content-Type', 'text/html; charset=utf-8')
-	res.end('收到你的 POST 请求了')
-})
+
+
 
 
 
@@ -119,6 +129,10 @@ app.all('/file', (req, res) => {
 
 
 
+
+
+
+
 /*
 	🧱 中间件
 		1. 全局中间件 (比如记录每个请求的 url 与 ip 地址, 记录到一个文件内)
@@ -134,6 +148,8 @@ function recordMiddleware(req, res, next) {
 }
 
 app.use(recordMiddleware) //🔥使用 app . use 来调用函数, 实现【全局的拦截！】
+
+
 
 
 
@@ -153,9 +169,62 @@ app.get('/setting', checkCodeMiddleware, (req, res) => { //👈引入 checkCodeM
 
 
 
-// 🔥 声明一个静态资源中间件, 可以通过 localhost:3030/static.html 来访问
-app.use(express.static(path.join(__dirname + '../public'))) //👈静态资源的文件夹路径
 
+
+// 🔥🔥🔥 声明一个静态资源中间件, 可以通过 localhost:3030/main.js 来访问 (🚀会自动去找 static 文件下的内容)
+// 【局域网内】可以通过 ip:3030/main.js 来访问
+// 静态资源中间件响应静态资源（比如 CSS、视频）, 路由响应动态资源（比如排行榜、推荐等）
+app.use(express.static(path.join(__dirname + '../../static'))) //👈静态资源的文件夹路径
+
+
+
+
+
+
+// 👇登录表单的服务, 获取 post 的【🎈请求体】数据
+app.get('/login', (req, res) => {
+	res.setHeader('Content-Type', 'text/html; charset=utf-8')
+	res.sendFile(__dirname + '/form.html')
+	// res.end()
+})
+
+// 👇 使用 bodyParser 中间件来【处理路由中的请求体】, 提取请求体中的数据
+// const jsonParser = bodyParser.json() //请求体为 json 格式, 则使用此方法
+const urlEncodeParser = bodyParser.urlencoded( { extended: false } ) //请求体为 query 格式, 则使用此方法
+
+app.post('/login', urlEncodeParser, (req, res) => {
+	res.setHeader('Content-Type', 'text/html; charset=utf-8')
+
+	console.log(req.body) // { username: 'XXX', password: 'XXX' }
+})
+
+
+
+
+
+
+// 🧱 防盗链中间件（比如防止图片资源被其他域名所访问）
+app.use((req, res, next) => {
+	// 检测请求头中的数据是否为 localhost:3030, 获取 referer
+	let referer = req.get('referer') // 🚀🚀获得请求头中的 referer , referer 会携带当前网页的【域名】【协议】跟【端口】到服务器内, 服务器可以根据这些信息来判断是不是自家的网页发送的请求
+	console.log(referer)
+
+	if(referer) {
+		// 实例化 url
+		let url = new URL(referer)
+
+		// 获取 hostname
+		let hostname =  url.hostname
+		console.log(hostname)
+
+		// 判断是不是自家的域名
+		if(hostname !== '192.168.1') {
+			res.status(404).send(`<h3>不是合法的 hostname! 404</h3>`)// 响应为 404
+			return
+		}
+	}
+	next()
+})
 
 
 
