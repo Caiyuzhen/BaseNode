@@ -6,47 +6,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link
-      href="../public/stylesheets/bootstrap.css"
-      rel="stylesheet"
+		// 👇记得要用 / 开头！
+		href="/css/bootstrap.css" 
+		rel="stylesheet"
     />
     <style>
-      label {
-        font-weight: normal;
-      }
-      .panel-body .glyphicon-remove{
-        display: none;
-      }
-      .panel-body:hover .glyphicon-remove{
-        display: inline-block
-      }
+		label {
+			font-weight: normal;
+		}
+			.panel-body .glyphicon-remove{
+				display: none;
+		}
+			.panel-body:hover .glyphicon-remove{
+				display: inline-block
+		}
+		.text-rightIcon {
+			position: relative;
+			height: 20px;
+		}
+		.line-left {
+			position: absolute;
+			right: 12px;
+			top: 12px
+			cursor: pointer;
+			background-color: #892392;
+			height: 4px;
+			width: 28px;
+			rotate: 45deg;
+		}
+		.line-right {
+			position: absolute;
+			right: 12px;
+			cursor: pointer;
+			background-color: #892392;
+			height: 4px;
+			width: 28px;
+			rotate: 135deg;
+		}
     </style>
   </head>
   <body>
     <div class="container">
       <div class="row">
         <div class="col-xs-12 col-lg-8 col-lg-offset-2">
-          <h2>记账本</h2>
+          <h2>记账本
+			<br>
+			account 由路由传递数据, 🚀👇 item.type === '-1' 表示支出, 否则就是收入
+			<br>
+			href="/account/< % = item.id  % > 表示删除账单时发送路由请求, 传入 id
+		  </h2>
           <hr />
           <div class="accounts">
+
             <% accounts.forEach(item => { %>
-            <div class="panel <%= item.type==='-1' ? 'panel-danger' : 'panel-success'  %>">
-              <div class="panel-heading"><%= item.time %></div>
-              <div class="panel-body">
-                <div class="col-xs-6"><%= item.title %></div>
-                <div class="col-xs-2 text-center">
-                  <span class="label <%= item.type==='-1' ? 'label-warning' : 'label-success'  %>"><%= item.type==='-1' ? '支出' : '收入'  %></span>
-                </div>
-                <div class="col-xs-2 text-right"><%= item.account %> 元</div>
-                <div class="col-xs-2 text-right">
-                  <a href="/account/<%= item.id %>">
-                  <span
-                    class="glyphicon glyphicon-remove"
-                    aria-hidden="true"
-                  ></span>
-                </a>
-                </div>
-              </div>
-            </div>
+				<div class="panel <%= item.type==='-1' ? 'panel-danger' : 'panel-success'  %>">
+				<div class="panel-heading"><%= item.time %></div>
+				<div class="panel-body">
+					<div class="col-xs-6"><%= item.remarks %></div>
+					<div class="col-xs-2 text-center">
+
+					<span class="label <%= item.type==='-1' ? 'label-warning' : 'label-success'  %>"><%= item.type==='-1' ? '支出' : '收入'  %></span>
+					</div>
+					<div class="col-xs-2 text-right"><%= item.account %> 元</div>
+
+					<div class="col-xs-2 text-rightIcon">
+						<a href="/account/<%= item.id %>">	
+							<span
+								class="glyphicon glyphicon-remove line-left"
+								aria-hidden="false"
+							></span>
+							<span
+								class="glyphicon glyphicon-remove line-right"
+								aria-hidden="false"
+							></span>
+						</a>
+					</div>
+				</div>
+				</div>
             <% }) %>
             
           </div>

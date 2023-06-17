@@ -1,0 +1,18 @@
+{
+  "account": [
+    {
+      "id": "BYgZvIjwR",
+      "time": "2023-06-07",
+      "type": "1",
+      "account": "1600",
+      "remarks": "打工打工打工打工"
+    },
+    {
+      "id": "LngiEwR54",
+      "time": "2023-06-17",
+      "type": "-1",
+      "account": "600",
+      "remarks": "买了很多矿泉水"
+    }
+  ]
+}

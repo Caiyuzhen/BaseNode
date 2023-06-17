@@ -12,9 +12,10 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+// 👇全局中间件
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false })); // 👈这里是为了获取请求体内的数据
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

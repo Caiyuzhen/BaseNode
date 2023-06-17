@@ -2,13 +2,30 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>前端页面</title>
+	<title>请求不同的页面</title>
+	<h1>请求不同的页面</h1>
 </head>
+
+<style>
+	td {
+		padding: 20px 40px;
+	}
+	table tr :nth-child(odd) { /*table隔行换色*/
+		background-color: aquamarine;
+	}
+	table tr :nth-child(even) {
+		background-color: #f5b1ff;
+	}
+	table, td {
+		border-collapse: collapse;
+	}
+</style>
 <body>
-	<h1>前端页面</h1>
-	<button id="btn-1">发送请求获取页面</button>
-	<button id="btn-2">发送请求获取 Table </button>
-	<script src="./main.js"></script>
+
+	<button id="btn">发送请求</button>
+	<button id="btn2">发送请求获取表格</button>
+	<script src="./index.js"></script>
 </body>
 </html>
