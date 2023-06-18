@@ -95,17 +95,17 @@ mongoose.connection.once('open', () => { //设置连接成功的回调
 	})
 
 	// 4. 创建模型对象 (⚡️对文档操作的封装对象, 可以完成对文档的【增删改查】)
-	let BookModel = mongoose.model('books', BookSchema) // 集合名称 + 结构对象
+	let BookModel = mongoose.model('books', BookSchema) // 集合名称 + 结构对象 👈注意, mongo 默认会使用复数来创建集合！！！会自动加 s！！
 
 
 
-	// 5. 创建一列文档
+	// 5. 创建一列文档 🌟
 	const bookName = 'Python 高级程序设计'
 	BookModel.create({
 		name: bookName,
 		author: 'Kim',
-		price: 19.9,
-		isHot: false,
+		price: 39.1,
+		isHot: true,
 		tags: ['程序设计', '计算机', '技术'],
 		publicTime: new Date()
 	})
@@ -131,6 +131,26 @@ mongoose.connection.once('open', () => { //设置连接成功的回调
 	})
 	.catch(err => {
 		console.log('删除重复文档失败:', err)
+	})
+
+
+	// 7.删除一条数据(用 id 来删除) ❌
+	BookModel.deleteOne({ _id: "648f410b73f8940f46c5c271" })
+	.then(() => {
+		console.log('文档删除成功')
+	})
+	.catch((error) => {
+		console.error('删除文档时出现错误:', error)
+	})
+
+
+	// 批量删除多条数据 (比如批量删除不实热门的书)
+	BookModel.deleteMany({ isHot: false })
+	.then(() => {
+		console.log('文档删除成功')
+	})
+	.catch((error) => {
+		console.error('删除文档时出现错误:', error)
 	})
 })
 
