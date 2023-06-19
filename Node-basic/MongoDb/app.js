@@ -41,7 +41,8 @@
 		【文档命令】
 			新增文档数据
 				db.集合名.insert(文档对象)
-					比如 db.Users.insert({name: 'Zeno', age: 18})
+					比如 db.books.insert({name: 'Zeno', age: 18})
+					db.Books.insert({name: 'JAVA 高级程序设计', author: 'Zen', price: 29.9, isHot: true, tags: '计算机'})
 			查找文档数据
 				全部显示
 					db.集合名.find()
@@ -64,7 +65,9 @@ const mongoose = require('mongoose')
 
 
 // 1. 连接数据库
-mongoose.connect('mongodb://127.0.0.1:27017/Users') //⚡️ mongodb 为协议名称 , Users 为数据库名称（如果没有会自动创建）
+// mongoose.connect('mongodb://127.0.0.1:27017/Users') //⚡️ mongodb 为协议名称 , 【🚀🚀 Users 为数据库】名称（如果没有会自动创建）
+mongoose.connect('mongodb://127.0.0.1:27017/Users') //⚡️ mongodb 为协议名称 , 【🚀🚀 Users 为数据库】名称（如果没有会自动创建）
+
 
 
 // 2. 设置回调
@@ -100,10 +103,11 @@ mongoose.connection.once('open', () => { //设置连接成功的回调
 
 
 	// 5. 创建一列文档 🌟
-	const bookName = 'Python 高级程序设计'
+	const bookName = 'JAVA 高级程序设计'
 	BookModel.create({
 		name: bookName,
 		author: 'Kim',
+		style: '中等',
 		price: 39.1,
 		isHot: true,
 		tags: ['程序设计', '计算机', '技术'],
@@ -135,23 +139,42 @@ mongoose.connection.once('open', () => { //设置连接成功的回调
 
 
 	// 7.删除一条数据(用 id 来删除) ❌
-	BookModel.deleteOne({ _id: "648f410b73f8940f46c5c271" })
-	.then(() => {
-		console.log('文档删除成功')
-	})
-	.catch((error) => {
-		console.error('删除文档时出现错误:', error)
-	})
+	// BookModel.deleteOne({ _id: "648f410b73f8940f46c5c271" })
+	// .then(() => {
+	// 	console.log('文档删除成功')
+	// })
+	// .catch((error) => {
+	// 	console.error('删除文档时出现错误:', error)
+	// })
 
 
 	// 批量删除多条数据 (比如批量删除不实热门的书)
-	BookModel.deleteMany({ isHot: false })
-	.then(() => {
-		console.log('文档删除成功')
+	// BookModel.deleteMany({ isHot: false })
+	// .then(() => {
+	// 	console.log('文档删除成功')
+	// })
+	// .catch((error) => {
+	// 	console.error('删除文档时出现错误:', error)
+	// })
+
+
+	// 8.更新文档
+	BookModel.updateOne({name: 'Python 高级程序设计'}, {price: 9.9}, (err, data) => { //【条件, 比如 name = XXX】, 【要更新成的内容】
+		if(err) {
+			console.log('❌更新失败')
+			return
+		}
+		console.log('成功更新:', data)
 	})
-	.catch((error) => {
-		console.error('删除文档时出现错误:', error)
+
+	BookModel.updateMany({name: 'Python 高级程序设计'}, {price: 9.9}, (err, data) => { //【条件, 比如 name = XXX】, 【要更新成的内容】
+		if(err) {
+			console.log('❌更新失败')
+			return
+		}
+		console.log('成功更新:', data)
 	})
+
 })
 
 
