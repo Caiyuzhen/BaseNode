@@ -6,17 +6,16 @@ const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync(__dirname + '/../db/db.json') // 🔥记得更改 db 的位置！
 const db = low(adapter)
 
-const shortid = require('shortid')
+const shortid = require('shortid') //🚀生成独特 id 的库
 
 
 
 
-// 渲染记帐本列表
+// 渲染记帐本列表的页面
+// 访问 http://localhost:3000/account
 router.get('/account', function(req, res, next) {
-
 	/* 账单数据, 从 lowdb 内获取数据 */
 	let accounts = db.get('account').value() //🔥获取数据
-
 	// res.send('记帐本列表')
 	res.render('list.ejs', { accounts: accounts })
 })
@@ -25,7 +24,8 @@ router.get('/account', function(req, res, next) {
 
 
 
-// 渲染添加记录页面
+// 渲染添加记录的页面
+// 访问 http://localhost:3000/account/create
 router.get('/account/create', function(req, res, next) {
 	// res.send('添加记录')
 	res.render('create.ejs')
@@ -35,12 +35,12 @@ router.get('/account/create', function(req, res, next) {
 
 
 
-// 新增记录后, 获取请求体内数据的路由
-router.post('/account', (req, res) => {
+// 🚀 新增记录后, 获取请求体内数据的路由 （处理表单提交的数据）！
+router.post('/account', (req, res) => { //👈再在前端的表单内 post => /account 请求路由
 	
 	console.log(req.body) //因为外层 app.js 已经做了中间件, 所以这里可以直接获取到请求体内的数据
 
-	let id = shortid()
+	let id = shortid() // 🔥🔥🔥 shortid() 是生成唯一 id 的一个包
 
 	//🔥🔥把数据写入 lowDb    =>   shift() 就是优先展示最近的数据, push() 就是优先展示最旧的数据
 	// db.get('account').push(req.body).write() //直接拿数据, 没有定义 id

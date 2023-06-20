@@ -14,7 +14,7 @@ let AccountSchema = new mongoose.Schema({
 	},
 	account: {
 		type: Number,
-		require: true,
+		required: true,
 	},
 	remarks: {
 		type: String,	
@@ -22,7 +22,7 @@ let AccountSchema = new mongoose.Schema({
 })
 
 // 创建模型对象 (⚡️对文档操作的封装对象, 可以完成对文档的【增删改查】)
-let AccountModel = mongoose.model('books', AccountSchema) // 集合名称 + 结构对象 👈注意, mongo 默认会使用复数来创建集合！！！会自动加 s！！
+let AccountModel = mongoose.model('account', AccountSchema) // 集合名称 + 结构对象 👈注意, mongo 默认会使用复数来创建集合！！！会自动加 s！！
 
 
 // 🚀暴露模型对象

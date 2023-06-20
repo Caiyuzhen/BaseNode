@@ -26,7 +26,7 @@
 		}
 		.line-left {
 			position: absolute;
-			right: 12px;
+			right: -612px;
 			top: 12px
 			cursor: pointer;
 			background-color: #892392;
@@ -36,7 +36,7 @@
 		}
 		.line-right {
 			position: absolute;
-			right: 12px;
+			right: -612px;
 			cursor: pointer;
 			background-color: #892392;
 			height: 4px;
@@ -59,13 +59,14 @@
           <div class="accounts">
 
             <% accounts.forEach(item => { %>
-				<div class="panel <%= item.type==='-1' ? 'panel-danger' : 'panel-success'  %>">
-				<div class="panel-heading"><%= item.time %></div>
+				<div class="panel <%= item.type === -1 ? 'panel-danger' : 'panel-success'  %>">
+				<div class="panel-heading"><%= item.time.toLocaleDateString() %></div>
 				<div class="panel-body">
+				<div class="col-xs-2"><%= item.title %></div>
 					<div class="col-xs-6"><%= item.remarks %></div>
 					<div class="col-xs-2 text-center">
 
-					<span class="label <%= item.type==='-1' ? 'label-warning' : 'label-success'  %>"><%= item.type==='-1' ? '支出' : '收入'  %></span>
+					<span class="label <%= item.type=== -1 ? 'label-warning' : 'label-success'  %>"><%= item.type==='-1' ? '支出' : '收入'  %></span>
 					</div>
 					<div class="col-xs-2 text-right"><%= item.account %> 元</div>
 

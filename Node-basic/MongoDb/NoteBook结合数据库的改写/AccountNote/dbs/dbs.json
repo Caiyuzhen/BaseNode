@@ -1,0 +1,92 @@
+{
+  "account": [
+    {
+      "id": "3RlYJ5d4S",
+      "title": "买桌子",
+      "time": "2023-06-20",
+      "type": "-1",
+      "account": "2000",
+      "remarks": "生活开销"
+    },
+    {
+      "id": "54RXTOsSl",
+      "title": "买汉堡",
+      "time": "2023-06-20",
+      "type": "-1",
+      "account": "32",
+      "remarks": "生活开销"
+    },
+    {
+      "id": "h1vyZZ8AL",
+      "title": "买可乐",
+      "time": "2023-06-20",
+      "type": "-1",
+      "account": "11",
+      "remarks": "生活开销"
+    },
+    {
+      "id": "gNyuEij1S",
+      "title": "买桃子",
+      "time": "2023-06-20",
+      "type": "-1",
+      "account": "11",
+      "remarks": "生活开销"
+    },
+    {
+      "id": "hWX6w0sOA",
+      "title": "买冰淇淋",
+      "time": "2023-06-20",
+      "type": "-1",
+      "account": "12",
+      "remarks": "生活开销"
+    },
+    {
+      "id": "ckwLClnh8",
+      "title": "买苹果",
+      "time": "2023-06-20",
+      "type": "-1",
+      "account": "8",
+      "remarks": "生活开销"
+    },
+    {
+      "id": "3dy79Mn0Z",
+      "title": "买葡萄",
+      "time": "2023-06-20",
+      "type": "-1",
+      "account": "19",
+      "remarks": "生活开销"
+    },
+    {
+      "id": "Kj6Nhhgjd",
+      "title": "买汽车",
+      "time": "2023-06-20",
+      "type": "-1",
+      "account": "200000",
+      "remarks": "花了一大笔开销"
+    },
+    {
+      "id": "VImQqU_q5",
+      "title": "买手机",
+      "time": "2023-06-20",
+      "type": "-1",
+      "account": "9999",
+      "remarks": "大开销"
+    },
+    {
+      "id": "BYgZvIjwR",
+      "title": "吃饭",
+      "time": "2023-06-07",
+      "type": "1",
+      "account": "1600",
+      "remarks": "打工打工打工打工"
+    },
+    {
+      "id": "LngiEwR54",
+      "title": "喝水",
+      "time": "2023-06-17",
+      "type": "-1",
+      "account": "600",
+      "remarks": "买了很多矿泉水"
+    }
+  ]
+}

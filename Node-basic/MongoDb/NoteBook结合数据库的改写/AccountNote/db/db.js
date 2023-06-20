@@ -24,7 +24,7 @@ module.exports = function(success, error) {
 	const config = require('../config/config.js')
 	const { DBHOST, DBPORT, DBNAME } = config
 
-	// 连接数据库服务
+	// 🔥连接数据库服务
 	mongoose.connect(`mongodb://${DBHOST}:${DBPORT}/${DBNAME}`) //⚡️ mongodb 为协议名称 , 【🚀🚀 Users 为数据库】名称（如果没有会自动创建）
 	// mongoose.connect('mongodb://127.0.0.1:27017/Users') //⚡️ mongodb 为协议名称 , 【🚀🚀 Users 为数据库】名称（如果没有会自动创建）
 
