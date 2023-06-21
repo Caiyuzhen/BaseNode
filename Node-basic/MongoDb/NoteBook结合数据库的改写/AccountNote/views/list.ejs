@@ -49,12 +49,16 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-12 col-lg-8 col-lg-offset-2">
-          <h2>记账本
-			<br>
-			account 由路由传递数据, 🚀👇 item.type === '-1' 表示支出, 否则就是收入
-			<br>
-			href="/account/< % = item.id  % > 表示删除账单时发送路由请求, 传入 id
-		  </h2>
+			<div class="col-xs-6">
+          		<h2> ✏️ 记账本 </h2>
+				<div class="col-xs-6 text-right"> <a href='/account/create' class="btn btn-primary">添加账单</a> </div>
+		  	</div>
+			<p>
+				<br>
+				account 由路由传递数据, 🚀👇 item.type === '-1' 表示支出, 否则就是收入
+				<br>
+				href="/account/< % = item.id  % > 表示删除账单时发送路由请求, 传入 id
+			</p>
           <hr />
           <div class="accounts">
 
@@ -66,12 +70,12 @@
 					<div class="col-xs-6"><%= item.remarks %></div>
 					<div class="col-xs-2 text-center">
 
-					<span class="label <%= item.type=== -1 ? 'label-warning' : 'label-success'  %>"><%= item.type==='-1' ? '支出' : '收入'  %></span>
+					<span class="label <%= item.type=== -1 ? 'label-warning' : 'label-success'  %>"><%= item.type=== -1 ? '支出' : '收入'  %></span>
 					</div>
 					<div class="col-xs-2 text-right"><%= item.account %> 元</div>
 
 					<div class="col-xs-2 text-rightIcon">
-						<a href="/account/<%= item.id %>">	
+						<a class="delBtn" href="/account/<%= item._id %>">	
 							<span
 								class="glyphicon glyphicon-remove line-left"
 								aria-hidden="false"
@@ -91,4 +95,20 @@
       </div>
     </div>
   </body>
+
+  <script>
+	// 获取所有的删除按钮
+	let delBtns = document.querySelectorAll('.delBtn')
+	console.log(delBtns)
+	delBtns.forEach(item => {
+		item.addEventListener('click', (e) => {
+			if(confirm('确认删除该条记录？')) {
+				return true
+			} else {
+				// 阻止默认行为
+				e.preventDefault()
+			}
+		})
+	})
+  </script>
 </html>

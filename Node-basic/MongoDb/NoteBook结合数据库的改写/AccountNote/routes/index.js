@@ -84,11 +84,18 @@ router.get('/account/:id', (req, res) => { //🚀 拿到 id 然后删除数据
 	let id = req.params.id //获得 id 参数
 
 	// 删除数据
-	db.get('account').remove({id: id}).write()
+	// db.get('account').remove({id: id}).write()
+	AccountModel.deleteOne({_id: id})
+	.then(data => {
+		// 成功的响应, 跳转至渲染 list 页面
+		res.render('success', {msg: '👍 删除成功！', url: '/account'}) //🚀ejs 配置, 添加成功后的【文案】跟【跳转链接】
+		console.log('成功删除文档:', data)
+	})
+	.catch(err => {
+		console.log(err)
+		res.status(500).send('Server Error, 删除文档失败')
+	})
 
-	// 提醒
-	res.render('success', {msg: '🎉 删除成功！', url: '/account'}) //🚀ejs 配置, 添加成功后的【文案】跟【跳转链接】
-	// res.send('删除成功！')
 })
 
   
