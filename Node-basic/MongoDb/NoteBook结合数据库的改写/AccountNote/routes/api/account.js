@@ -1,30 +1,47 @@
 var express = require('express')
 var router = express.Router()
-const low = require('lowdb')
-const FileSync = require('lowdb/adapters/FileSync') //lowDB 的示例, 用 lowDB 的方式读取文件
+// 👇使用 lowDB 读取文件
+// const low = require('lowdb')
+// const FileSync = require('lowdb/adapters/FileSync') //lowDB 的示例, 用 lowDB 的方式读取文件
 
-const adapter = new FileSync(__dirname + '/../dbs/dbs.json') // 🔥记得更改 db 的位置！
-const db = low(adapter)
+// const adapter = new FileSync(__dirname + '/../dbs/dbs.json') // 🔥记得更改 db 的位置！
+// const db = low(adapter)
 
-const shortid = require('shortid')
-const AccountModel = require('../models/AccountModel') //MongoDB 数据库
+// const shortid = require('shortid')
+
+
+// 👇使用 MongoDB 数据库
+const AccountModel = require('../../models/AccountModel') 
 
 
 
 
 // 渲染记帐本列表的页面
-// 访问 http://localhost:3000/account
+// 访问 http://localhost:3000/api/account
 router.get('/account', function(req, res, next) {
 
 	// 从 MongoDB 内读取数据, 顺便按【时间倒序】
 	AccountModel.find().sort({time: -1}).exec()
 	.then(data => {
-		// 成功的响应
-		res.render('list.ejs', { accounts: data })
+		// 成功的响应(不需要进行后端渲染时, 直接返回 json 数据即可)
+		res.json({
+			// 响应编号
+			code: '0000', //一般是 20000 或 0000
+			// 响应的信息
+			msg: '读取成功',
+			// 响应的数据
+			data: data
+		})
 	})
 	.catch(err => {
 		console.log(err)
-		res.status(500).send('Server Error, 读取文档失败')
+		// 失败的响应(不需要进行后端渲染时, 直接返回 json 数据即可)
+		res.json({
+			// 响应编号
+			code: '0001',
+			msg: '读取失败',
+			data: null,
+		})
 	})
 })
 
@@ -36,7 +53,7 @@ router.get('/account', function(req, res, next) {
 // 访问 http://localhost:3000/account/create
 router.get('/account/create', function(req, res, next) {
 	// res.send('添加记录')
-	res.render('create.ejs')
+	res.render('create.ejs') 
 })
 
 
@@ -44,6 +61,7 @@ router.get('/account/create', function(req, res, next) {
 
 
 // 🚀 新增记录后, 获取请求体内数据的路由 （处理表单提交的数据）！
+//  http://localhost:3000/api/account
 router.post('/account', (req, res) => { //👈再在前端的表单内 post => /account 请求路由
 	
 	console.log(req.body) //因为外层 app.js 已经做了中间件, 所以这里可以直接获取到请求体内的数据
@@ -66,12 +84,23 @@ router.post('/account', (req, res) => { //👈再在前端的表单内 post => /
 	})
 	.then(data => {
 		// 成功的响应, 跳转渲染 list 页面
-		res.render('success', {msg: '🎉 添加成功！', url: '/account'}) //🚀ejs 配置, 添加成功后的【文案】跟【跳转链接】
+		// res.render('success', {msg: '🎉 添加成功！', url: '/account'}) //👈 要渲染前端页面的做法, ejs 配置, 添加成功后的【文案】跟【跳转链接】 //
+
+		res.json({ //👈只回传数据, 不渲染前端页面
+			code: '0000',
+			msg: '创建成功',
+			data: data //👈把新增的数据传回去
+		})
 		console.log('成功新增文档:', data)
 	})
 	.catch(err => {
 		console.log(err)
-		res.status(500).send('Server Error, 添加文档失败')
+		// res.status(500).send('Server Error, 添加文档失败')
+		res.json({
+			code: '1002',
+			msg: '创建失败',
+			data: null
+		})
 	})
 
 })

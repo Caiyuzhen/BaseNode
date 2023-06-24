@@ -1,13 +1,18 @@
 var express = require('express')
 var router = express.Router()
-const low = require('lowdb')
-const FileSync = require('lowdb/adapters/FileSync') //lowDB 的示例, 用 lowDB 的方式读取文件
 
-const adapter = new FileSync(__dirname + '/../dbs/dbs.json') // 🔥记得更改 db 的位置！
-const db = low(adapter)
+// 👇使用 lowDB 读取文件
+// const low = require('lowdb')
+// const FileSync = require('lowdb/adapters/FileSync') //lowDB 的示例, 用 lowDB 的方式读取文件
 
-const shortid = require('shortid')
-const AccountModel = require('../models/AccountModel') //MongoDB 数据库
+// const adapter = new FileSync(__dirname + '/../dbs/dbs.json') // 🔥记得更改 db 的位置！
+// const db = low(adapter)
+
+// const shortid = require('shortid')
+
+
+// 👇使用 MongoDB 数据库
+const AccountModel = require('../../models/AccountModel') 
 
 
 
@@ -19,7 +24,7 @@ router.get('/account', function(req, res, next) {
 	// 从 MongoDB 内读取数据, 顺便按【时间倒序】
 	AccountModel.find().sort({time: -1}).exec()
 	.then(data => {
-		// 成功的响应
+		// 进行后端渲染
 		res.render('list.ejs', { accounts: data })
 	})
 	.catch(err => {

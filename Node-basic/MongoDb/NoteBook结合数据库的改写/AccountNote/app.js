@@ -4,7 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
+
+// 👇 accountRouter 路由接口文件
+var indexRouter = require('./routes/webRender/index')//👈导入 Web 端的路由
+const accountRouter = require('./routes/api/account') //👈导入移动端的 API
 
 
 var app = express();
@@ -14,13 +17,17 @@ app.set('view engine', 'ejs');
 
 // 👇全局中间件
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false })); // 👈这里是为了获取请求体内的数据
+
+app.use(express.json()) // 👈这里是为了获取请求体内的数据 => ⚡️⚡️做了中间件处理, 可以同时解析道 JSON 跟 QueryString 的数据
+app.use(express.urlencoded({ extended: false })) // 👈这里是为了获取请求体内的数据 => ⚡️⚡️做了中间件处理, 可以同时解析道 JSON 跟 QueryString 的数据
+
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use('/', indexRouter);
+
+app.use('/', indexRouter)//定义路由接口 http://localhost:3000/account
+app.use('/api', accountRouter) //定义路由接口 http://localhost:3000/api/account
 
 
 // catch 404 and forward to error handler
