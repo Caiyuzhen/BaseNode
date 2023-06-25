@@ -36,7 +36,7 @@ router.get('/account', function(req, res, next) {
 	.catch(err => {
 		console.log(err)
 		// 失败的响应(不需要进行后端渲染时, 直接返回 json 数据即可)
-		res.json({
+		return res.json({
 			// 响应编号
 			code: '0001',
 			msg: '读取失败',
@@ -63,7 +63,8 @@ router.get('/account/:id',(req, res) => {
 		})
 	})
 	.catch(err => {
-		res.json({
+		console.log(err)
+		return res.json({
 			code: '1004',
 			msg: '读取失败',
 			data: null
@@ -121,7 +122,7 @@ router.post('/account', (req, res) => { //👈再在前端的表单内 post => /
 	.catch(err => {
 		console.log(err)
 		// res.status(500).send('Server Error, 添加文档失败')
-		res.json({
+		return res.json({
 			code: '1002',
 			msg: '创建失败',
 			data: null
@@ -133,31 +134,42 @@ router.post('/account', (req, res) => { //👈再在前端的表单内 post => /
 
 
 // 更新单条记录的 API, (Restful API 风格, 资源 + id)
-router.patch('/account:id', (req, res) => {
+router.patch('/account/:id', (req, res) => { //👈写法为  :/id
 	// 获取 id
-	let {id} = req.params
+	let {id} = req.params //或者是 =>  let id = req.params.id
 
-	// 更新数据库
+	// 🚀更新数据库
 	AccountModel.updateOne(
 		{_id: id}, // 条件
-		req.body,// 更新的内容
+		req.body,// 具体更新的内容, 比如 {"account": 1000}
 	)
 	.then((updateResult) => {
-		res.json({ //👈只回传数据, 不渲染前端页面
-			code: '0000',
-			msg: '更新成功',
-			data: data //👈把新增的数据传回去
+		AccountModel.findById(id) //🚀再次查询数据库, 获取更新的这条数据
+		.then(data => { //读取成功
+			res.json({ //👈只回传数据, 不渲染前端页面
+				code: '0000',
+				msg: '更新成功',
+				data: data //👈把新增的数据传回去
+			})
 		})
+		.catch(err => { //读取失败
+			return res.json({
+				code: '1004',
+				msg: '读取失败',
+				data: null
+			}) 
+		})
+
 	})
 	.catch((err) => {
-		res.json({
+		console.log(err)
+		return res.json({
 			code: '1005',
 			msg: '更新失败',
 			data: null
 		})
 	})
 })
-
 
 
 
@@ -177,6 +189,7 @@ router.delete('/account/:id', (req, res) => { //🚀 拿到 id 然后删除数�
 		})
 	})
 	.catch(err => {
+		console.log(err)
 		res.json({
 			code: '1003',
 			msg: '删除失败',
