@@ -6,7 +6,7 @@ var logger = require('morgan');
 
 
 // 👇 accountRouter 路由接口文件
-var indexRouter = require('./routes/webRender/index')//👈导入 Web 端的路由
+var indexRouter = require('./routes/webRenderApi/index')//👈导入 Web 端的路由
 const accountRouter = require('./routes/api/account') //👈导入移动端的 API
 
 

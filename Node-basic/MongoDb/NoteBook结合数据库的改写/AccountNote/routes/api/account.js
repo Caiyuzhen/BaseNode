@@ -16,7 +16,7 @@ const AccountModel = require('../../models/AccountModel')
 
 
 
-// 渲染记帐本列表的页面
+// 获取所有记录的路由 API
 // 访问 http://localhost:3000/api/account
 router.get('/account', function(req, res, next) {
 
@@ -48,6 +48,32 @@ router.get('/account', function(req, res, next) {
 
 
 
+// 获取单条记录的路由 API (Restful API 风格, 资源 + id)
+router.get('/account/:id',(req, res) => {
+	// 🚀🚀从 params 中获取 id
+	let id = req.params.id
+	
+	// 查询数据库
+	AccountModel.findById(id).exec()
+	.then(data => {
+		res.json({
+			code: '0000',
+			msg: '读取成功',
+			data: data
+		})
+	})
+	.catch(err => {
+		res.json({
+			code: '1004',
+			msg: '读取失败',
+			data: null
+		})
+	})
+})
+
+
+
+
 
 // 渲染添加记录的页面
 // 访问 http://localhost:3000/account/create
@@ -60,7 +86,7 @@ router.get('/account/create', function(req, res, next) {
 
 
 
-// 🚀 新增记录后, 获取请求体内数据的路由 （处理表单提交的数据）！
+// 🚀 新增记录的 API（处理表单提交的数据）！
 //  http://localhost:3000/api/account
 router.post('/account', (req, res) => { //👈再在前端的表单内 post => /account 请求路由
 	
@@ -85,7 +111,6 @@ router.post('/account', (req, res) => { //👈再在前端的表单内 post => /
 	.then(data => {
 		// 成功的响应, 跳转渲染 list 页面
 		// res.render('success', {msg: '🎉 添加成功！', url: '/account'}) //👈 要渲染前端页面的做法, ejs 配置, 添加成功后的【文案】跟【跳转链接】 //
-
 		res.json({ //👈只回传数据, 不渲染前端页面
 			code: '0000',
 			msg: '创建成功',
@@ -102,27 +127,61 @@ router.post('/account', (req, res) => { //👈再在前端的表单内 post => /
 			data: null
 		})
 	})
-
 })
 
 
 
 
+// 更新单条记录的 API, (Restful API 风格, 资源 + id)
+router.patch('/account:id', (req, res) => {
+	// 获取 id
+	let {id} = req.params
+
+	// 更新数据库
+	AccountModel.updateOne(
+		{_id: id}, // 条件
+		req.body,// 更新的内容
+	)
+	.then((updateResult) => {
+		res.json({ //👈只回传数据, 不渲染前端页面
+			code: '0000',
+			msg: '更新成功',
+			data: data //👈把新增的数据传回去
+		})
+	})
+	.catch((err) => {
+		res.json({
+			code: '1005',
+			msg: '更新失败',
+			data: null
+		})
+	})
+})
+
+
+
+
+
 // 删除记录的方法
-router.get('/account/:id', (req, res) => { //🚀 拿到 id 然后删除数据
+router.delete('/account/:id', (req, res) => { //🚀 拿到 id 然后删除数据
 	let id = req.params.id //获得 id 参数
 
 	// 删除数据
 	// db.get('account').remove({id: id}).write()
 	AccountModel.deleteOne({_id: id})
 	.then(data => {
-		// 成功的响应, 跳转至渲染 list 页面
-		res.render('success', {msg: '👍 删除成功！', url: '/account'}) //🚀ejs 配置, 添加成功后的【文案】跟【跳转链接】
-		console.log('成功删除文档:', data)
+		res.json({
+			code: '0000',
+			msg: '删除成功',
+			data: {}
+		})
 	})
 	.catch(err => {
-		console.log(err)
-		res.status(500).send('Server Error, 删除文档失败')
+		res.json({
+			code: '1003',
+			msg: '删除失败',
+			data: null
+		})
 	})
 
 })
