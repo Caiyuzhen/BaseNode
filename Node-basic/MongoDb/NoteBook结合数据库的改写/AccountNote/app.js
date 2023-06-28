@@ -6,8 +6,9 @@ var logger = require('morgan');
 
 
 // 👇 accountRouter 路由接口文件
-var indexRouter = require('./routes/webRenderApi/index')//👈导入 Web 端的路由
-const accountRouter = require('./routes/api/account') //👈导入移动端的 API
+var indexRouter = require('./routes/webRenderApi/index')//👈 导入渲染 html 文件的路由, 记得在下面设置路由中间件！app.use('/', indexRouter)
+var authRouter = require('./routes/webRenderApi/auth')//👈 导入渲染 html 文件的路由, 记得在下面设置路由中间件！app.use('/', indexRouter)
+const accountRouter = require('./routes/api/account') //👈 导入移动端的 API
 
 
 var app = express();
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/', indexRouter)//定义路由接口 http://localhost:3000/account
+app.use('/', authRouter)
 app.use('/api', accountRouter) //定义路由接口 http://localhost:3000/api/account
 
 

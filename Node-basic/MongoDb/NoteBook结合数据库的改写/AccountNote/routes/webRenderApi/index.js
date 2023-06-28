@@ -30,6 +30,7 @@ router.get('/account', function(req, res, next) {
 	.catch(err => {
 		console.log(err)
 		res.status(500).send('Server Error, 读取文档失败')
+		return
 	})
 })
 
@@ -41,7 +42,7 @@ router.get('/account', function(req, res, next) {
 // 访问 http://localhost:3000/account/create
 router.get('/account/create', function(req, res, next) {
 	// res.send('添加记录')
-	res.render('create.ejs')
+	res.render('create.ejs') // 前提是要在 app.js 文件中导入! var indexRouter = require('./routes/webRenderApi/index')
 })
 
 
@@ -71,12 +72,13 @@ router.post('/account', (req, res) => { //👈再在前端的表单内 post => /
 	})
 	.then(data => {
 		// 成功的响应, 跳转渲染 list 页面
-		res.render('success', {msg: '🎉 添加成功！', url: '/account'}) //🚀ejs 配置, 添加成功后的【文案】跟【跳转链接】
+		res.render('success', {msg: '🎉 添加成功！', url: '/account'}) //🚀ejs 配置, 添加成功后的【文案】跟【跳转链接】, // 前提是要在 app.js 文件中导入! var indexRouter = require('./routes/webRenderApi/index')
 		console.log('成功新增文档:', data)
 	})
 	.catch(err => {
 		console.log(err)
 		res.status(500).send('Server Error, 添加文档失败')
+		return
 	})
 
 })
@@ -93,12 +95,13 @@ router.get('/account/:id', (req, res) => { //🚀 拿到 id 然后删除数据
 	AccountModel.deleteOne({_id: id})
 	.then(data => {
 		// 成功的响应, 跳转至渲染 list 页面
-		res.render('success', {msg: '👍 删除成功！', url: '/account'}) //🚀ejs 配置, 添加成功后的【文案】跟【跳转链接】
+		res.render('success', {msg: '👍 删除成功！', url: '/account'}) //🚀ejs 配置, 添加成功后的【文案】跟【跳转链接】, // 前提是要在 app.js 文件中导入! var indexRouter = require('./routes/webRenderApi/index')
 		console.log('成功删除文档:', data)
 	})
 	.catch(err => {
 		console.log(err)
 		res.status(500).send('Server Error, 删除文档失败')
+		return
 	})
 
 })
