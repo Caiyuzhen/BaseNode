@@ -57,9 +57,12 @@
 			<div class="col-xs-6">
           		<h2> ✏️ 记账本 </h2>
 				<div class="btn-container">
+		
 					<a href='/account/create' class="btn btn-primary">添加账单</a> 
-
-					<a href="/logout" class="btn btn-danger">退出登录</a>
+			
+					<form action="/logout" method="post">
+						<button class="btn btn-danger">退出登录</button>
+					</form>
 				</div>
 		  	</div>
 			<p>

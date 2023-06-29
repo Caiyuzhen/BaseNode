@@ -45,7 +45,7 @@ app.use(express.json()) // 👈这里是为了获取请求体内的数据 => ⚡
 app.use(express.urlencoded({ extended: false })) // 👈这里是为了获取请求体内的数据 => ⚡️⚡️做了中间件处理, 可以同时解析道 JSON 跟 QueryString 的数据
 
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'))) //🚀设置静态文件的文件夹
 
 
 
@@ -56,7 +56,9 @@ app.use('/api', accountRouter) //定义路由接口 http://localhost:3000/api/ac
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+	// 响应 404 页面
+	res.render('404')
+//   next(createError(404));
 });
 
 

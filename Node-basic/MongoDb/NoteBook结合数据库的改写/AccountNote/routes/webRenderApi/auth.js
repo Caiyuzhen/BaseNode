@@ -80,7 +80,7 @@ router.post('/login', (req, res) => {
 
 
 // 处理退出的请求 ————————————————————————————————————————————————————————————————————————————————————————————————
-router.get('/logout', (req, res) => {
+router.post('/logout', (req, res) => {
 	// 销毁 session
 	req.session.destroy(() => {
 		res.render('success', {msg: '退出成功', url: '/login'})
