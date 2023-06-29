@@ -1,13 +1,13 @@
 const express = require('express')
-const session = require('express-session')
-const MongoStore = require('connect-mongo')
+const session = require('express-session') // Express 的库, 可以从获得请求内的 session
+const MongoStore = require('connect-mongo') // mongodb 的库, 可以把 Session 存在 mongoDB 中
 
 
 // 创建应用对象
 const app = express()
 
 
-// 【第 1 步】设置 session 中间件
+// 【第 1 步】设置 session 中间件, 可以把 Session 存在 mongoDB 中
 app.use(session({ // app.use 设置中间件
 	name: 'sid', // 设置 cookie 的 name, 默认是 connect.sid
 	secret: 'atguigu', // 服务器端生成 session 的签名 （参与加密的字符串） =>  加盐
@@ -40,7 +40,7 @@ app.get('/login', (req, res) => {
 	// 👉 注意, 会在浏览器保存一个 sid=s%XXXXXXXXXXXXXXXXXXXXXXXXXX
 	if(req.query.username === 'admin' && req.query.password === '123') { //用户名 admin, 密码 123 
 		// 🔥 设置 session 信息
-		req.session.username = 'admin' // 👉 相当于把用户名存储到数据库中, 因为上面已经做了拦截, 文档名称为 session  //👈 因为 npm i express-session connect-mongo 的中间件已经做了处理
+		req.session.username = 'admin' // 👉 相当于把用户名存储到数据库中, 因为上面 app.use(session({...})) 已经做了拦截, 文档名称为 session  //👈 因为 npm i express-session connect-mongo 的中间件已经做了处理
 		// req.session.uid = '258opfd' //例子
 		res.send('登录成功!')
 	} else {

@@ -1,5 +1,6 @@
 var express = require('express')
 var router = express.Router()
+let checkLoginMiddleware = require('../../middleware/checkLoginMiddleware.js')
 
 // 👇使用 lowDB 读取文件
 // const low = require('lowdb')
@@ -11,15 +12,31 @@ var router = express.Router()
 // const shortid = require('shortid')
 
 
+
+
 // 👇使用 MongoDB 数据库
 const AccountModel = require('../../models/AccountModel') 
 
 
+// 🚀 声明检测用户是否登录的中间件 (可以抽象出来)
+// let checkLoginMiddleware = (req, res, next) => {
+// 	if(!req.session.username) { //看数据库里边有没有用户登录时保存的 session (有有效期)
+// 		return res.redirect('/login') // 👉重定向到登录页面
+// 	}
+
+// 	// 🚀执行后续的路由回调
+// 	next()
+// }
 
 
-// 渲染记帐本列表的页面
+// 渲染记帐本列表的页面 (🔥需要判断是否登录)
 // 访问 http://localhost:3000/account
-router.get('/account', function(req, res, next) {
+router.get('/account', checkLoginMiddleware, function(req, res, next) { // 🚀checkLoginMiddleware 为检测用户是否登录的中间件
+
+	// 🔥判断是否登录 (不封装中间件的话, 每个页面都得写一遍)
+	// if(!req.session.username) { //看数据库里边有没有用户登录时保存的 session (有有效期)
+	// 	return res.redirect('/login') // 👉重定向到登录页面
+	// }
 
 	// 从 MongoDB 内读取数据, 顺便按【时间倒序】
 	AccountModel.find().sort({time: -1}).exec()
@@ -40,7 +57,7 @@ router.get('/account', function(req, res, next) {
 
 // 渲染添加记录的页面
 // 访问 http://localhost:3000/account/create
-router.get('/account/create', function(req, res, next) {
+router.get('/account/create', checkLoginMiddleware, function(req, res, next) { // 🚀checkLoginMiddleware 为检测用户是否登录的中间件
 	// res.send('添加记录')
 	res.render('create.ejs') // 前提是要在 app.js 文件中导入! var indexRouter = require('./routes/webRenderApi/index')
 })
@@ -87,7 +104,7 @@ router.post('/account', (req, res) => { //👈再在前端的表单内 post => /
 
 
 // 删除记录的方法
-router.get('/account/:id', (req, res) => { //🚀 拿到 id 然后删除数据
+router.get('/account/:id', checkLoginMiddleware, (req, res) => { //🚀 '/account/:id' 表示 拿到 id 然后删除数据
 	let id = req.params.id //获得 id 参数
 
 	// 删除数据
