@@ -9,12 +9,13 @@ const { DBHOST, DBPORT, DBNAME} = require('./config/config.js')
 
 
 // 👇 accountRouter 路由接口文件
-var indexRouter = require('./routes/webRenderApi/index')//👈 导入渲染 html 文件的路由, 记得在下面设置路由中间件！app.use('/', indexRouter)
-var authRouter = require('./routes/webRenderApi/auth')//👈 导入渲染 html 文件的路由, 记得在下面设置路由中间件！app.use('/', indexRouter)
-const accountRouter = require('./routes/api/account') //👈 导入移动端的 API
+const indexRouter = require('./routes/webRenderApi/index')//👈 导入渲染 html 文件的路由, 记得在下面设置路由中间件！app.use('/', indexRouter)
+const authRouter = require('./routes/webRenderApi/auth')//👈 导入渲染 html 文件的路由, 记得在下面设置路由中间件！app.use('/', indexRouter)
+const accountRouter = require('./routes/api/account') //👈 导入 API（不渲染 html 文件, 只返回数据）
+const authApiRouter = require('./routes/api/auth.js') //👈 导入 API （不渲染 html 文件, 只返回数据）
 
 
-var app = express();
+var app = express()
 
 
 // 设置 session 中间件, 可以把 Session 存在 mongoDB 中 => 不能写死, 引入 config 配置文件
@@ -49,9 +50,10 @@ app.use(express.static(path.join(__dirname, 'public'))) //🚀设置静态文件
 
 
 
-app.use('/', indexRouter)//定义路由接口 http://localhost:3000/account
-app.use('/', authRouter)
-app.use('/api', accountRouter) //定义路由接口 http://localhost:3000/api/account
+app.use('/', indexRouter)//渲染路由页面 http://localhost:3000/account
+app.use('/', authRouter) // 渲染路由页面 http://localhost:3000/auth
+app.use('/api', accountRouter) //定义路由接口 http://localhost:3000/api/account 🔥get 可以直接访问！！
+app.use('/api', authApiRouter) //定义路由接口 http://localhost:3000/api/login  🔥post 访问！！在 postman 内请求
 
 
 // catch 404 and forward to error handler

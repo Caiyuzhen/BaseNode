@@ -1,5 +1,8 @@
-var express = require('express')
-var router = express.Router()
+const express = require('express')
+const router = express.Router()
+const jwt = require('jsonwebtoken') // Token 生成库
+const checkTokenMiddleware = require('../../middleware/checkTokenMiddleware') // 校验 Token 的中间件
+
 // 👇使用 lowDB 读取文件
 // const low = require('lowdb')
 // const FileSync = require('lowdb/adapters/FileSync') //lowDB 的示例, 用 lowDB 的方式读取文件
@@ -10,17 +13,69 @@ var router = express.Router()
 // const shortid = require('shortid')
 
 
+
+// 👇声明校验 Token 的中间件（增删改查的接口都需要校验 token, 用 token 来保护这些接口!!）
+// const checkTokenMiddleware = (req, res, next) => {
+// 	// 🚀 获取用户登录时创建的 token (在 auth.js 内生成) ——————————————————————————————————————————————————————————————————————————
+// 	let token = req.get('token') //在 postman 中的 header 请求头内填入【键值对】 token + eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRhbWluMCIsIl9pZCI6IjY0OWQwYzA3YTllMTgyMWEzNjFlOTA3MCIsImlhdCI6MTY4ODEyMTg2NywiZXhwIjoxNjg4NzI2NjY3fQ.3VPBpaUnt3R4UUb0Q6C0clWU7Up3YW3rHxm2is_nSd4
+
+// 	if(!token) { //如果没有 token
+// 		return res.json({
+// 			code: '2003',
+// 			msg: 'token 缺失',
+// 			data: null
+// 		})
+// 	}
+
+// 	// 校验 token 是否正确
+// 	jwt.verify(token, 'abc', (err, data) => {
+// 		if(err) {
+// 			return res.json({
+// 				code: '2004',
+// 				msg: 'token 校验失败',
+// 				data: null
+// 			})
+// 		} 
+// 	})
+
+// 	//🚀 如果 token 校验成功, 则执行后续的路由回调
+// 	next() // 在 Express 中，路由中间件可以使用 next()函数将控制权传递给下一个中间件函数或路由处理程序
+// }
+
+
 // 👇使用 MongoDB 数据库
 const AccountModel = require('../../models/AccountModel') 
 
 
-
-
-// 获取所有记录的路由 API
+// 获取记账本所有数据的路由 API ——————————————————————————————————————————————————————————————————————————
 // 访问 http://localhost:3000/api/account
-router.get('/account', function(req, res, next) {
+router.get('/account', checkTokenMiddleware, function(req, res, next) {
 
-	// 从 MongoDB 内读取数据, 顺便按【时间倒序】
+	// // 🚀 获取用户登录时创建的 token (在 auth.js 内生成) ——————————————————————————————————————————————————————————————————————————
+	// let token = req.get('token') //在 postman 中的 header 请求头内填入【键值对】 token + eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRhbWluMCIsIl9pZCI6IjY0OWQwYzA3YTllMTgyMWEzNjFlOTA3MCIsImlhdCI6MTY4ODEyMTg2NywiZXhwIjoxNjg4NzI2NjY3fQ.3VPBpaUnt3R4UUb0Q6C0clWU7Up3YW3rHxm2is_nSd4
+
+	// if(!token) { //如果没有 token
+	// 	return res.json({
+	// 		code: '2003',
+	// 		msg: 'token 缺失',
+	// 		data: null
+	// 	})
+	// }
+
+	// 校验 token 是否正确
+	// jwt.verify(token, 'abc', (err, data) => {
+	// 	if(err) {
+	// 		return res.json({
+	// 			code: '2004',
+	// 			msg: 'token 校验失败',
+	// 			data: null
+	// 		})
+	// 	} 
+	// 	// ...
+	// })
+	console.log(req.user) //因为在 checkTokenMiddleware.js 中用 req.user = data 来保存了这个 token 正确的用户登录信息, 所以可以打印当前这个用户的信息, 后续可以去查找【🔥这个用户的账单】
+
+	// 🚀 从 MongoDB 内读取数据, 顺便按【时间倒序】 ——————————————————————————————————————————————————————————————————————————
 	AccountModel.find().sort({time: -1}).exec()
 	.then(data => {
 		// 成功的响应(不需要进行后端渲染时, 直接返回 json 数据即可)
@@ -48,8 +103,8 @@ router.get('/account', function(req, res, next) {
 
 
 
-// 获取单条记录的路由 API (Restful API 风格, 资源 + id)
-router.get('/account/:id',(req, res) => {
+// 获取单条记录的路由 API (Restful API 风格, 资源 + id) ——————————————————————————————————————————————————————————————————————————
+router.get('/account/:id', checkTokenMiddleware, (req, res) => {
 	// 🚀🚀从 params 中获取 id
 	let id = req.params.id
 	
@@ -75,21 +130,9 @@ router.get('/account/:id',(req, res) => {
 
 
 
-
-// 渲染添加记录的页面
-// 访问 http://localhost:3000/account/create
-router.get('/account/create', function(req, res, next) {
-	// res.send('添加记录')
-	res.render('create.ejs') 
-})
-
-
-
-
-
-// 🚀 新增记录的 API（处理表单提交的数据）！
+// 🚀 新增记录的 API（处理表单提交的数据）！——————————————————————————————————————————————————————————————————————————
 //  http://localhost:3000/api/account
-router.post('/account', (req, res) => { //👈再在前端的表单内 post => /account 请求路由
+router.post('/account', checkTokenMiddleware, (req, res) => { //👈再在前端的表单内 post => /account 请求路由
 	
 	console.log(req.body) //因为外层 app.js 已经做了中间件, 所以这里可以直接获取到请求体内的数据
 
@@ -133,8 +176,8 @@ router.post('/account', (req, res) => { //👈再在前端的表单内 post => /
 
 
 
-// 更新单条记录的 API, (Restful API 风格, 资源 + id)
-router.patch('/account/:id', (req, res) => { //👈写法为  :/id
+// 更新单条记录的 API, (Restful API 风格, 资源 + id) ——————————————————————————————————————————————————————————————————————————
+router.patch('/account/:id', checkTokenMiddleware, (req, res) => { //👈写法为  :/id
 	// 获取 id
 	let {id} = req.params //或者是 =>  let id = req.params.id
 
@@ -174,8 +217,8 @@ router.patch('/account/:id', (req, res) => { //👈写法为  :/id
 
 
 
-// 删除记录的方法
-router.delete('/account/:id', (req, res) => { //🚀 拿到 id 然后删除数据
+// 删除记录的方法 ——————————————————————————————————————————————————————————————————————————
+router.delete('/account/:id', checkTokenMiddleware, (req, res) => { //🚀 拿到 id 然后删除数据
 	let id = req.params.id //获得 id 参数
 
 	// 删除数据
